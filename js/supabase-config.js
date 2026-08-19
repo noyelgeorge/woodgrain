@@ -9,4 +9,4 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
    NOTE: this is NOT real security — anyone who reads the page source can see it.
    It just stops casual visitors from finding /admin.html and messing with your products.
    Change it to whatever you like. */
-const ADMIN_PASSWORD = 'changeme123';
+// const ADMIN_PASSWORD = '';
