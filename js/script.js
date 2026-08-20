@@ -221,15 +221,11 @@ function buildProductCard(p) {
           ${price}
         </p>
 
-        
-` : ''}
-
       </div>
 
     </article>
   `;
 }
-
 
 /* ============================================================
    WHATSAPP BUTTON HANDLER
