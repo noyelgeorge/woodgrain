@@ -27,8 +27,16 @@ function openWhatsApp(message) {
 
 function enquireProduct(p) {
   openWhatsApp(
-    `Hello Wood & Grains Furniture, I'm interested in the "${p.name}" (${formatPrice(p.price)}). Could you share more details and availability?`
-  );
+`Hello Wood & Grains Furniture,
+
+I'm interested in the following product:
+
+Product: ${p.name}
+Price: ${formatPrice(p.price)}
+
+Could you please share more details about this product, including availability and delivery information?
+
+Thank you!`  );
 }
 
 // Look a product up by id and send the WhatsApp enquiry.
