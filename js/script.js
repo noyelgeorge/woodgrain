@@ -80,15 +80,16 @@ function initNavbar() {
 }
 
 function buildProductCard(p) {
-  const name = escapeHtml(p.name);
+  const name = escapeHtml(p.name || 'Unnamed product');
   const img = escapeHtml(p.image || '');
+  const price = (p.price === null || p.price === undefined || p.price === '') ? 'Price on request' : formatPrice(p.price);
   return `<article class="product-card">
     <a href="product.html?id=${encodeURIComponent(p.id)}" class="product-img-wrap">
       <img src="${img}" alt="${name}" loading="lazy">
     </a>
     <div class="product-info">
       <a href="product.html?id=${encodeURIComponent(p.id)}"><p class="product-name">${name}</p></a>
-      <p class="product-price">${formatPrice(p.price)}</p>
+      <p class="product-price">${price}</p>
       <button class="btn btn-primary btn-sm" style="width:100%;margin-top:8px" data-enquire-id="${escapeHtml(p.id)}">
         Enquire on WhatsApp
       </button>
