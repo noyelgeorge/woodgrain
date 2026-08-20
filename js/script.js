@@ -402,19 +402,14 @@ function buildGallery(p) {
     p.image_4
   ].filter(Boolean);
 
- 
+  const main = document.getElementById('main-product-img');
 
-  const main = document.getElementById(
-    'main-product-img'
-  );
-
-  if (main) {
+  if (main && images.length) {
     main.src = images[0];
     main.alt = p.name || 'Product image';
   }
 
-  const thumbList =
-    document.getElementById('thumb-list');
+  const thumbList = document.getElementById('thumb-list');
 
   if (!thumbList) return;
 
@@ -427,14 +422,10 @@ function buildGallery(p) {
 
   thumbList.innerHTML = images
     .map((src, i) => `
-      <div
-        class="thumb-item${i === 0 ? ' active' : ''}"
-      >
+      <div class="thumb-item${i === 0 ? ' active' : ''}">
         <img
           src="${escapeHtml(src)}"
-          alt="${escapeHtml(
-            p.name || 'Product'
-          )} — view ${i + 1}"
+          alt="${escapeHtml(p.name || 'Product')} — view ${i + 1}"
           onerror="
             this.parentElement.style.background='var(--bg-alt)'
           "
@@ -457,13 +448,11 @@ function buildGallery(p) {
         t.classList.add('active');
 
         if (main) {
-          main.src =
-            t.querySelector('img').src;
+          main.src = t.querySelector('img').src;
         }
       });
     });
 }
-
 
 /* ============================================================
    PRODUCT DETAIL PAGE
