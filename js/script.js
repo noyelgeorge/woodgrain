@@ -201,7 +201,7 @@ function buildProductCard(p) {
           src="${img}"
           alt="${name}"
           loading="lazy"
-          onerror="this.src='images/products/placeholder.jpg'"
+          onerror="this.style.display='none'"
         >
       </a>
 
@@ -402,11 +402,7 @@ function buildGallery(p) {
     p.image_4
   ].filter(Boolean);
 
-  if (!images.length) {
-    images.push(
-      'images/products/placeholder.jpg'
-    );
-  }
+ 
 
   const main = document.getElementById(
     'main-product-img'
