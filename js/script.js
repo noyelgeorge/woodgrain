@@ -397,7 +397,6 @@ async function initShopPage() {
 function buildGallery(p) {
   const images = [
     p.image,
-    p.image_url,
     p.image_2,
     p.image_3,
     p.image_4
