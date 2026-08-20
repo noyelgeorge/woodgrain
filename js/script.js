@@ -396,6 +396,7 @@ async function initShopPage() {
 
 function buildGallery(p) {
   const images = [
+    p.image,
     p.image_url,
     p.image_2,
     p.image_3,
@@ -404,15 +405,21 @@ function buildGallery(p) {
 
   const main = document.getElementById('main-product-img');
 
-  if (main && images.length) {
+  if (!main) return;
+
+  // Load the actual Supabase product image
+  if (images.length > 0) {
     main.src = images[0];
     main.alt = p.name || 'Product image';
+    main.style.display = 'block';
   }
 
-  const thumbList = document.getElementById('thumb-list');
+  const thumbList =
+    document.getElementById('thumb-list');
 
   if (!thumbList) return;
 
+  // Hide thumbnails when there is only one image
   if (images.length <= 1) {
     thumbList.style.display = 'none';
     return;
@@ -425,9 +432,11 @@ function buildGallery(p) {
       <div class="thumb-item${i === 0 ? ' active' : ''}">
         <img
           src="${escapeHtml(src)}"
-          alt="${escapeHtml(p.name || 'Product')} — view ${i + 1}"
+          alt="${escapeHtml(
+            p.name || 'Product'
+          )} — view ${i + 1}"
           onerror="
-            this.parentElement.style.background='var(--bg-alt)'
+            this.parentElement.style.display='none'
           "
         >
       </div>
@@ -437,6 +446,7 @@ function buildGallery(p) {
   thumbList
     .querySelectorAll('.thumb-item')
     .forEach(t => {
+
       t.addEventListener('click', () => {
 
         thumbList
@@ -447,13 +457,18 @@ function buildGallery(p) {
 
         t.classList.add('active');
 
-        if (main) {
-          main.src = t.querySelector('img').src;
+        const thumbImage =
+          t.querySelector('img');
+
+        if (thumbImage && thumbImage.src) {
+          main.src = thumbImage.src;
+          main.style.display = 'block';
         }
+
       });
+
     });
 }
-
 /* ============================================================
    PRODUCT DETAIL PAGE
    ============================================================ */
