@@ -83,7 +83,7 @@
             <label>Price (₹)</label>
             <input type="number" id="f-price" placeholder="8999" min="0" step="1">
           </div>
-          <div>
+          <div class="full">
             <label>Category</label>
             <select id="f-category">
               <option value="living-room">Living Room</option>
@@ -91,14 +91,6 @@
               <option value="dining-room">Dining Room</option>
               <option value="office">Office</option>
               <option value="storage">Storage</option>
-            </select>
-          </div>
-          <div>
-            <label>Material</label>
-            <select id="f-material">
-              <option value="wood">Wood</option>
-              <option value="upholstery">Upholstery</option>
-              <option value="metal">Metal</option>
             </select>
           </div>
           <div class="full">
@@ -150,7 +142,6 @@
   let currentProducts = [];
   const MAX_IMAGE_BYTES = 5 * 1024 * 1024; // 5MB
   const ALLOWED_CATEGORIES = ['living-room', 'bedroom', 'dining-room', 'office', 'storage'];
-  const ALLOWED_MATERIALS = ['wood', 'upholstery', 'metal'];
 
   function escapeHtml(str) {
     return String(str ?? '').replace(/[&<>"']/g, c => ({
@@ -226,7 +217,7 @@
         <img src="${escapeHtml(p.image_url || '')}" alt="${escapeHtml(p.name)}" onerror="this.style.opacity=0">
         <div>
           <div class="name">${escapeHtml(p.name)}</div>
-          <div class="meta">₹${Number(p.price).toLocaleString('en-IN')} · ${escapeHtml(p.category)} · ${escapeHtml(p.material)}</div>
+          <div class="meta">₹${Number(p.price).toLocaleString('en-IN')} · ${escapeHtml(p.category)}</div>
         </div>
         <div class="row">
           <button class="btn-outline" data-edit-id="${p.id}">Edit</button>
@@ -255,7 +246,6 @@
     document.getElementById('f-name').value = p.name || '';
     document.getElementById('f-price').value = p.price || '';
     document.getElementById('f-category').value = p.category || 'living-room';
-    document.getElementById('f-material').value = p.material || 'wood';
     document.getElementById('f-description').value = p.description || '';
     document.getElementById('f-product-info').value = p.product_info || '';
     document.getElementById('current-image').textContent = p.image_url ? 'Current photos are set — choose new files only for the ones you want to replace.' : '';
@@ -270,7 +260,6 @@
     document.getElementById('f-name').value = '';
     document.getElementById('f-price').value = '';
     document.getElementById('f-category').value = 'living-room';
-    document.getElementById('f-material').value = 'wood';
     document.getElementById('f-description').value = '';
     document.getElementById('f-product-info').value = '';
     document.getElementById('f-image').value = '';
@@ -303,7 +292,6 @@
     const priceRaw = document.getElementById('f-price').value;
     const price = Number(priceRaw);
     const category = document.getElementById('f-category').value;
-    const material = document.getElementById('f-material').value;
     const description = document.getElementById('f-description').value.trim();
     const product_info = document.getElementById('f-product-info').value.trim();
     const file = document.getElementById('f-image').files[0];
@@ -315,7 +303,6 @@
     if (name.length > 150) { showStatus('Product name is too long.', false); return; }
     if (!priceRaw || !Number.isFinite(price) || price <= 0) { showStatus('Please enter a valid price.', false); return; }
     if (!ALLOWED_CATEGORIES.includes(category)) { showStatus('Please choose a valid category.', false); return; }
-    if (!ALLOWED_MATERIALS.includes(material)) { showStatus('Please choose a valid material.', false); return; }
 
     const btn = document.getElementById('save-btn');
     btn.disabled = true; btn.textContent = 'Saving…';
@@ -330,7 +317,7 @@
       if (file4) image_4 = await uploadImage(file4);
 
       if (editingId) {
-        const update = { name, price, category, material, description, product_info };
+        const update = { name, price, category, description, product_info };
         if (image_url) update.image_url = image_url;
         if (image_2) update.image_2 = image_2;
         if (image_3) update.image_3 = image_3;
@@ -341,7 +328,7 @@
       } else {
         if (!image_url) { showStatus('Please choose a main photo for a new product.', false); btn.disabled = false; btn.textContent = 'Save product'; return; }
         const { error } = await sb.from('products').insert({
-          name, price, category, material, description, product_info,
+          name, price, category, description, product_info,
           image_url, image_2, image_3, image_4
         });
         if (error) throw error;
