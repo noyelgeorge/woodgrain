@@ -177,10 +177,10 @@ function buildProductCard(p) {
   const name = escapeHtml(p.name || 'Unnamed product');
 
   const img = escapeHtml(
-    p.image ||
-    p.image_url ||
-    'images/products/placeholder.jpg'
-  );
+  p.image ||
+  p.image_url ||
+  ''
+);
 
   const price =
     p.price === null ||
