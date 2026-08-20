@@ -221,15 +221,7 @@ function buildProductCard(p) {
           ${price}
         </p>
 
-        ${document.body.dataset.page !== 'shop' ? `
-  <button
-  type="button"
-  class="btn btn-primary btn-sm"
-  style="width:100%;margin-top:8px"
-  data-enquire-id="${escapeHtml(p.id)}"
->
-  Enquire on WhatsApp
-</button>
+        
 ` : ''}
 
       </div>
