@@ -1,3 +1,167 @@
+
+
+woodgrain-main (2).zip
+Zip Archive
+in shop.html the product image is visible but name and price is not visible
+in product.html both image and name is visible please review and give solution
+
+Yes. I reviewed the uploaded project, and the important point is:
+
+Your product data and buildProductCard() are correct. shop.html is generating the image, name, and price. Since product.html shows the same product name/image correctly, the Supabase data is not the problem.
+
+The problem is specifically with the Shop product-card presentation/CSS.
+
+What I found
+script.js generates this correctly:
+
+<div class="product-info">
+  <a ...><p class="product-name">...</p></a>
+  <p class="product-price">...</p>
+  <button ...>Enquire on WhatsApp</button>
+</div>
+And the CSS also defines .product-info, .product-name, and .product-price.
+
+So rather than changing your Supabase/database logic, I would make the product card CSS more explicit and robust.
+
+Replace the Shop product-card CSS
+In css/style.css, replace the existing section beginning with:
+
+/* Product Card */
+.product-card {
+through:
+
+.product-price {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text);
+}
+with:
+
+/* ============================================================
+  display: block;
+  width: 100%;
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.4;
+  font-weight: 700;
+  color: var(--text);
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+  .product-info {
+    padding: 12px;
+  }
+
+  .product-name {
+    font-size: 13px;
+    line-height: 1.35;
+  }
+
+  .product-price {
+    font-size: 14px;
+    line-height: 1.35;
+  }
+}
+Also change buildProductCard() slightly
+Your current function is basically correct, but I recommend making the links explicit block elements and avoiding the <p> inside the clickable link.
+
+Replace it with:
+
+function buildProductCard(p) {
+  const name = escapeHtml(p.name || 'Unnamed product');
+  const img = escapeHtml(p.image || 'images/products/placeholder.jpg');
+
+  const price =
+    (p.price === null || p.price === undefined || p.price === '')
+      ? 'Price on request'
+      : formatPrice(p.price);
+
+  return `
+    <article class="product-card">
+
+      <a
+        href="product.html?id=${encodeURIComponent(p.id)}"
+        class="product-img-wrap"
+      >
+        <img
+          src="${img}"
+          alt="${name}"
+          loading="lazy"
+        >
+      </a>
+
+      <div class="product-info">
+
+        <a
+          href="product.html?id=${encodeURIComponent(p.id)}"
+          class="product-name-link"
+        >
+          <span class="product-name">${name}</span>
+        </a>
+
+        <p class="product-price">${price}</p>
+
+        <button
+          class="btn btn-primary btn-sm"
+          style="width:100%;margin-top:8px"
+          data-enquire-id="${escapeHtml(p.id)}"
+        >
+          Enquire on WhatsApp
+        </button>
+
+      </div>
+
+    </article>
+  `;
+}
+Then add:
+
+.product-name-link {
+  display: block;
+  width: 100%;
+  color: inherit;
+  text-decoration: none;
+}
+
+.product-name-link:hover .product-name {
+  text-decoration: underline;
+}
+One more important thing
+Your product.html and shop.html both load:
+
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/mobile-fixes.css">
+and both use the same buildProductCard() for related products. That means the underlying product data is definitely being loaded correctly.
+
+So I would not change the Supabase query.
+
+If after this the image is still visible but the text isn't, then there is almost certainly another CSS rule being injected/overriding .product-info, and we should inspect the browser's computed styles next.
+
+
+give complete files which is changed
+
+Yes. I checked the actual uploaded project rather than just giving a snippet. The issue is in the shared product-card rendering/CSS, so the changed files are:
+
+css/style.css
+
+js/script.js
+
+I have prepared the complete files, not just the changed sections.
+
+Download the complete changed files
+
+
+Or, if you prefer, replace both files directly from this package:
+
+[Download `woodgrain-shop-f
+
+
+
+
+style.css
+
+
 /* ============================================================
    FURNI. — Main Stylesheet
    ============================================================ */
@@ -751,6 +915,9 @@ input[type="range"]::-webkit-slider-thumb:active { cursor: grabbing; transform: 
 
 /* Product Card */
 .product-card {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
   background: var(--bg-card);
   border-radius: var(--r-md);
   overflow: hidden;
@@ -766,14 +933,19 @@ input[type="range"]::-webkit-slider-thumb:active { cursor: grabbing; transform: 
 }
 
 .product-img-wrap {
+  display: block;
   position: relative;
-  aspect-ratio: 1;
+  width: 100%;
+  aspect-ratio: 1 / 1;
   background: var(--bg-alt);
   overflow: hidden;
+  flex-shrink: 0;
 }
 
 .product-img-wrap img {
-  width: 100%; height: 100%;
+  display: block;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
   transition: transform 0.5s var(--ease);
 }
@@ -812,23 +984,50 @@ input[type="range"]::-webkit-slider-thumb:active { cursor: grabbing; transform: 
 .wishlist-btn.active svg { fill: var(--red); stroke: var(--red); }
 
 .product-info {
+  display: block;
+  width: 100%;
+  min-width: 0;
   padding: 16px 18px 18px;
+  background: var(--bg-card);
+  position: relative;
+  z-index: 2;
+}
+
+.product-name-link {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  color: inherit;
+  text-decoration: none;
 }
 
 .product-name {
+  display: block;
+  width: 100%;
+  min-width: 0;
   font-size: 14px;
+  line-height: 1.4;
   font-weight: 600;
-  color: var(--text);
-  margin-bottom: 6px;
+  color: var(--text) !important;
+  margin: 0 0 6px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 .product-price {
+  display: block;
+  width: 100%;
+  min-width: 0;
   font-size: 16px;
+  line-height: 1.4;
   font-weight: 700;
-  color: var(--text);
+  color: var(--text) !important;
+  margin: 0;
+}
+
+.product-name-link:hover .product-name {
+  text-decoration: underline;
 }
 
 /* Pagination */
@@ -1844,9 +2043,21 @@ footer {
     grid-template-columns: 1fr 1fr;
     gap: 12px;
   }
-  .product-info { padding: 12px; }
-  .product-name { font-size: 13px; }
-  .product-price { font-size: 14px; }
+  .product-info {
+    display: block;
+    width: 100%;
+    padding: 12px;
+  }
+  .product-name {
+    display: block;
+    font-size: 13px;
+    line-height: 1.35;
+  }
+  .product-price {
+    display: block;
+    font-size: 14px;
+    line-height: 1.35;
+  }
 
   /* PRODUCT DETAIL */
   .product-detail-page,
