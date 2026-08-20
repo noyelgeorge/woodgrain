@@ -27,7 +27,7 @@ function openWhatsApp(message) {
 
 function enquireProduct(p) {
   openWhatsApp(
-`Hello Wood & Grains Furniture,
+`Hello WoodGrains Furniture,
 
 I'm interested in the following product:
 
